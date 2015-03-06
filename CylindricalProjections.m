@@ -45,7 +45,5 @@ for y=1:height
         end
     end
 end
-%figure, imshow(cylImg);
-%size(cylindricalImage)
-%size(Mask)
+%figure, imshow(cylindricalImage);
 end

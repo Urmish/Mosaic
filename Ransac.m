@@ -3,7 +3,7 @@ function [ finalHomography, finalMatches ] = Ransac( feature1, desc1, feature2, 
 [matches, scores] = vl_ubcmatch(desc1, desc2) ;
 
 MaxInlierCount = -1;
-numIterations = 100;
+numIterations = 500;
 numMatches = size(matches,2) ;
 ErrorThreshold = 4;
 %X1 = f1(1:2,matches(1,:)) ; X1(3,:) = 1 ;
@@ -15,6 +15,8 @@ b = zeros (2*numOfRandPoints,1);
 for t=1:numIterations
     PreviousIndex = zeros(numOfRandPoints);
     index = 1;
+    A = zeros(2*numOfRandPoints,2*numOfRandPoints);
+    b = zeros (2*numOfRandPoints,1);
     for nor = 1:numOfRandPoints
         RandomNumber = randi(size(matches,2));
         while (ismember(RandomNumber,PreviousIndex))

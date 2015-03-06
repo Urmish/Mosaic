@@ -26,5 +26,9 @@ for i=1:length(cylindricalImage)-1
     HomographyMatches{i} = HomographyMatches_temp;
     HomographyMatrix{i} = HomographyMatrix_temp;
 end
-
+[HomographyMatrix_temp, HomographyMatches_temp] = Ransac(siftFeatures{length(cylindricalImage)}, siftDescriptors{length(cylindricalImage)},siftFeatures{1}, siftDescriptors{1});
+sprintf('Ransac for %d & %d image is over',length(cylindricalImage),1)
+HomographyMatches{length(cylindricalImage)} = HomographyMatches_temp;
+HomographyMatrix{length(cylindricalImage)} = HomographyMatrix_temp;
 %Code for stitching goes here
+panImg = StitchEmUp(cylindricalImage, Mask, HomographyMatrix);
