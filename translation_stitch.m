@@ -35,6 +35,18 @@ for i = 1 : numImages
         0, 'post');
 end
 
+%% Perform stitching by removing overlapping portion of one image in pair
+imPanorama = imtranslateds{1};
+for i = 2 : numImages
+    
+    % Remove overlapping part of panorama
+    imPanorama(imPanorama ~= 0 & imtranslateds{i} ~= 0) = 0;
+    % Add incoming image to panorama
+    imPanorama = imPanorama + imtranslateds{i};
+end
+
+figure;imshow(imPanorama);
+
 %%
 
 for i = 1 : numImages
