@@ -8,17 +8,20 @@ max_cols = -1;
 max_rows = -1;
 
 H_stitch{center} = [1 0 0;0 1 0;0 0 1];
+for i=(center+1):length(images)
+    H_stitch{i} = H_stitch{i-1}/homographies{i-1};
+    %TODO - Should the scale factor be 1?
+    H_stitch{i} = H_stitch{i}/H_stitch{i}(3,3);
+end
 for i=(center-1):-1:1
     H_stitch{i} = H_stitch{i+1}*homographies{i};
     %TODO - Should the scale factor be 1?
     H_stitch{i} = H_stitch{i}/H_stitch{i}(3,3);
 end
 
-for i=(center+1):length(images)
-    H_stitch{i} = H_stitch{i-1}/homographies{i-1};
-    %TODO - Should the scale factor be 1?
-    H_stitch{i} = H_stitch{i}/H_stitch{i}(3,3);
-end
+endHomography = H_stitch{length(images)}/homographies{length(images)};
+endHomography = endHomography/endHomography(3,3);
+clear homographies;
 
 %Now, we need to create this huge image where we can keep putting the
 %images one after the other. But How do I do that?
@@ -62,7 +65,28 @@ max_rows = ceil(max_rows);
 output_rows = max_rows - min_rows;
 output_cols = max_cols - min_cols;
 output_image = zeros(output_rows,output_cols,3);
+output_image_masks = zeros(output_rows,output_cols);
+%Question - How do I map the negative index like min_cols to the ouput rows
+%and cols??
 
+%Call PasteImage to place all images in the global expanded image, then
+%after each call, blend previous and new image. -- I cannot think of any
+%other method to do so
+for i=1:length(images)
+%    temp_output_image = zeros(output_rows,output_cols,3);
+%    temp_output_image_masks = zeros(output_rows,output_cols);
+    [temp_output_image, temp_output_image_masks] = PasteImage(im2double(images{i}),image_masks{i},output_rows,output_cols,H_stitch{i},min_rows,min_cols);
+    
+    if (i == 1)
+        output_image = temp_output_image;
+        output_image_masks = temp_output_image_masks;
+    else
+        %There should be some blending happening here
+        output_image = output_image+temp_output_image;
+        output_image_masks = output_image_masks+temp_output_image_masks;
+    end
+    figure, imshow(output_image)
+end
 
 end
 

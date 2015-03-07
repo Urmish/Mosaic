@@ -26,9 +26,7 @@ for y=1:height
         radDist = (1 + k1 * r_sqr + k2 * r_sqr^2);
         xd = xdist/radDist;
         yd = ydist/radDist;
-        
-
-        
+               
         %Convert to cylindrical image coordinates
         xCylImg = floor(width / 2 + (f * xd));
         yCylImg = floor(height / 2 - (f * yd));
