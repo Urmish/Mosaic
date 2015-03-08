@@ -1,3 +1,5 @@
+rng(0);  % Seed RNG for repeatability
+
 img = ReadImagesFromFolder('Images/','.JPG');
 size(img)
 cylindricalImage = {};
