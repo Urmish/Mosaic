@@ -1,7 +1,7 @@
 %% Equalize image exposures to reduce sharp changes in brightness when stitching
 % Assumes there is a imtranslateds cell array which we'll equalize
 
-if ~exist(imtranslateds, 'var')
+if ~exist('imtranslateds', 'var')
     error('Script expects a cell array imtranslateds');
 end
 
