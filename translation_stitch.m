@@ -68,4 +68,9 @@ for i = 1 : numImages
 end
 figure('name', 'translated images');montage(stackImTranslateds);
 
+%% Crop panorama by hill-climbing
+
+imPanoramaCropped = removeBlackPixels(imPanorama);
+
 figure('name', 'Stitched image'); imshow(imPanorama);
+figure('name', 'Stitched > cropped'); imshow(imPanoramaCropped);
