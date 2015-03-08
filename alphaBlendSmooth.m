@@ -19,7 +19,7 @@ for i = 1 : length(masks)
     border = mask & (imdilate(overlap, [0 1 0; 1 1 1; 0 1 0]) & ~overlap);
     
     % Distance transform from the border
-    distances{i} = bwdist(border) + 0.1;
+    distances{i} = bwdist(border) + 0.1;  % add episilon to prevent division by zero errors
 end
 
 %%
