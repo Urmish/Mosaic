@@ -2,7 +2,11 @@ img = ReadImagesFromFolder('Images/','.JPG');
 size(img)
 cylindricalImage = {};
 Mask = {};
-for i=1:size(img,4)
+numImages = size(img, 4);
+numImages = 4;
+sprintf('Input %i images\n', numImages');
+
+for i=1:numImages
     [cylindricalImageTemp, MaskTemp] = CylindricalProjections( img(:,:,:,i), 595, -0.15, 0.0 );
     cylindricalImage{i} = cylindricalImageTemp;
     Mask{i} = MaskTemp;
@@ -30,5 +34,8 @@ end
 sprintf('Ransac for %d & %d image is over',length(cylindricalImage),1)
 HomographyMatches{length(cylindricalImage)} = HomographyMatches_temp;
 HomographyMatrix{length(cylindricalImage)} = HomographyMatrix_temp;
+
+
+
 %Code for stitching goes here
-panImg = StitchEmUp(cylindricalImage, Mask, HomographyMatrix);
+%panImg = StitchEmUp(cylindricalImage, Mask, HomographyMatrix);
