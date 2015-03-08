@@ -1,15 +1,25 @@
 
 
 %% Force homographies to be translation only
-for i = 1: length(HomographyMatrix) - 1
+for i = 1: length(HomographyMatrix)
     HomographyMatrix{i}(:, 1:2) = [1 0; 0 1; 0 0];
     
     % Translation from i to i + 1
     translations(1:2, i + 1) = HomographyMatrix{i}(1:2, end);
 end
 
+% Force tail images to be at the same height if inputs are 360 deg
+% NOTE: this part isn't well tested.
+if exist('is360', 'var') && is360
+    disp(translations);
+    disp(translations(2, end))
+    translations(2, 1:end-1) = translations(2, 1:end-1) - ...
+        linspace(0, translations(2, end), size(translations, 2) - 1);
+    disp(translations);
+end
+
 % Get offset of images with respect to panorama frame
-global_offsets = cumsum(-translations, 2);
+global_offsets = cumsum(-translations(:, 1:end - 1), 2);
 
 % Make sure all translations are positive
 for dim = 1: 2
@@ -51,4 +61,11 @@ for i = 2 : numImages
     imPanorama = alpha_blend(imPanorama, imtranslated);
 end
 
-figure;imshow(imPanorama);
+figure('name', 'Stitched image'); imshow(imPanorama);
+
+% Display translated images in a single figure
+stackImTranslateds = zeros([size(imtranslateds{1}), numImages], 'uint8');
+for i = 1 : numImages
+    stackImTranslateds(:, :, :, i) = imtranslateds{i};
+end
+figure('name', 'translated images');montage(stackImTranslateds);

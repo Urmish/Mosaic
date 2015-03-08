@@ -3,7 +3,7 @@ size(img)
 cylindricalImage = {};
 Mask = {};
 numImages = size(img, 4);
-numImages = 4;
+% numImages = 4;
 sprintf('Input %i images\n', numImages');
 
 for i=1:numImages
@@ -34,8 +34,6 @@ end
 sprintf('Ransac for %d & %d image is over',length(cylindricalImage),1)
 HomographyMatches{length(cylindricalImage)} = HomographyMatches_temp;
 HomographyMatrix{length(cylindricalImage)} = HomographyMatrix_temp;
-
-
 
 %Code for stitching goes here
 %panImg = StitchEmUp(cylindricalImage, Mask, HomographyMatrix);
