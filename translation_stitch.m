@@ -32,14 +32,21 @@ for i = 1 : numImages
     imtranslateds{i} = imtranslate(cylindricalImage{i}, offset, 'OutputView', 'full');
 end
 
-% Erode images so that we don't get black artifacts at the border after stitching
+%% Erode images so that we don't get black artifacts at the border after stitching
 for i = 1 : numImages    
     % Mask that's 1 at the pixels we allow to survive after cropping
-    mask = imerode(rgb2gray(imtranslateds{i}) > 0, strel('disk', 3));
+    % We need to pad array with 1 pixel of zeros otherwise positive values
+    % at the border will not be eroded.
+    maskBefore = padarray(rgb2gray(imtranslateds{i}) > 0, [1  1]);
+    maskAfter = imerode(maskBefore, strel('square', 3));
+    maskAfter = maskAfter(2:end-1, 2:end-1);  % remove pads that we added
+    
     % Zero everything outside mask
-    imtranslateds{i}(~repmat(mask, [1, 1, 3])) = 0;
+    imtranslateds{i}(~repmat(maskAfter, [1, 1, 3])) = 0;
+
 end
 
+%%
 % Add black pixels to bottom and right of each translated so that they're
 % all the same size
 for i = 1 : numImages
