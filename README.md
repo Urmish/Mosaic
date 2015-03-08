@@ -7,4 +7,4 @@ To stitch a series of images into a panorama,
 
 <b></b>
 
-    >> Mosaic; translationStitch;
+    >> runMosaic; translationStitch;
