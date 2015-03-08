@@ -3,7 +3,6 @@
 %% Force homographies to be translation only
 for i = 1: length(HomographyMatrix) - 1
     HomographyMatrix{i}(:, 1:2) = [1 0; 0 1; 0 0];
-    disp(HomographyMatrix{i})
     
     % Translation from i to i + 1
     translations(1:2, i + 1) = HomographyMatrix{i}(1:2, end);
@@ -31,8 +30,6 @@ for i = 1 : numImages
     imtranslateds{i}(~mask) = 0;
 end
 
-
-
 % Add black pixels to bottom and right of each translated so that they're
 % all the same size
 for i = 1 : numImages
@@ -46,30 +43,12 @@ for i = 1 : numImages
         0, 'post');
 end
 
-%% Perform stitching by removing overlapping portion of one image in pair
+%% Perform stitching by alpha blending input images 1 by 1 to panorama
 imPanorama = imtranslateds{1};
 for i = 2 : numImages
     
     imtranslated = imtranslateds{i};
-    
-    % Binary mask that's 1 at the overlapping portion
-    overlap = imPanorama ~= 0 & imtranslated ~= 0;
-    
-    % Half intensities of both images at the overlap
-    imPanorama(overlap) = imPanorama(overlap) / 2;
-    imtranslated(overlap) = imtranslated(overlap) / 2;
-    
-    % Add incoming image to panorama
-    imPanorama = imPanorama + imtranslated;
+    imPanorama = alpha_blend(imPanorama, imtranslated);
 end
 
 figure;imshow(imPanorama);
-
-%%
-
-for i = 1 : numImages
-    figure;imshow(imtranslateds{i});
-end
-% for i = 1 : length(cylindricalImage)
-%     figure;imshow(cylindricalImage{i});
-% end
