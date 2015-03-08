@@ -6,6 +6,7 @@ function [ imBlended ] = alpha_blend( imInput1, imInput2 )
 % image with the same size as im1 and im2.
 
 im1 = double(imInput1); im2 = double(imInput2);
+overlap = rgb2gray(im1) > 0 & rgb2gray(im2) > 0;
 
 % Get weights of two images
 imInputs = {im1, im2};
@@ -20,15 +21,17 @@ for i = 1 : length(imInputs)
     xCOG = sum(x(mask)) / sum(mask(:));
     
     % Weight each pixel by its distance from COG
-    % Weight is 1 at COG and at the furthest point of the mask
+    % Weight is 1 at the overlap closest to COG and 0 at the overlap
+    % furthest from COG.
     distance = sqrt((x-xCOG).^2 + (y-yCOG).^2);
-    maxDistance = max(distance(mask));
-    weights{i} = (-distance + maxDistance) / maxDistance;
+    maxDistance = max(distance(overlap));
+    minDistance = min(distance(overlap));
+    weights{i} = (-distance + maxDistance) / (maxDistance - minDistance);
     
 end
 
 % Fill-in image that's not in the overlapping portion
-overlap = im1 > 0 & im2 > 0;
+overlap = repmat(overlap, [1 1 3]);
 imBlended = im1 .* (im1 > 0 & ~overlap) + im2 .* (im2 > 0 & ~overlap);
 
 % Create overlapping part (later we'll exclude everything outside

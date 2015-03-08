@@ -35,9 +35,9 @@ end
 % Erode images so that we don't get black artifacts at the border after stitching
 for i = 1 : numImages    
     % Mask that's 1 at the pixels we allow to survive after cropping
-    mask = imerode(imtranslateds{i} > 0, strel('square', 5));
+    mask = imerode(rgb2gray(imtranslateds{i}) > 0, strel('disk', 3));
     % Zero everything outside mask
-    imtranslateds{i}(~mask) = 0;
+    imtranslateds{i}(~repmat(mask, [1, 1, 3])) = 0;
 end
 
 % Add black pixels to bottom and right of each translated so that they're
@@ -61,11 +61,11 @@ for i = 2 : numImages
     imPanorama = alpha_blend(imPanorama, imtranslated);
 end
 
-figure('name', 'Stitched image'); imshow(imPanorama);
-
 % Display translated images in a single figure
 stackImTranslateds = zeros([size(imtranslateds{1}), numImages], 'uint8');
 for i = 1 : numImages
     stackImTranslateds(:, :, :, i) = imtranslateds{i};
 end
 figure('name', 'translated images');montage(stackImTranslateds);
+
+figure('name', 'Stitched image'); imshow(imPanorama);
