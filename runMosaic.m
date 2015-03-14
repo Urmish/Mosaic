@@ -15,13 +15,20 @@ sprintf('Input %i images\n', numImages');
 
 %%  Cylindrical projection
 
-k1 = -0.15; k2 = 0.0;  % camera parameters for radial distortion
-focalLength = 595;
-factor = size(img, 1) / 640;  % how much large this image set is c.f. 640
+% k1 and k2 of s110 at 4000x2664 is 3.5194684435329394e-02 -3.2228975511502600e-01
+% focal length of s110 at 4000x2664 is 2.8704516949460021e+03
+% k1 = -0.15; k2 = 0.0;  % camera parameters for radial distortion (Jia's
+% test images)
+k1 = 3.5194684435329394/100; k2 = -3.2228975511502600/10;
+focalLength = 2.8704516949460021*10^3;
+factor = size(img, 1) / 4000;  % how much large this image set is c.f. 640
 
 % Correct parameters for difference in resolution
 k1 = k1 / factor^2; k2 = k2 / factor^4;
 focalLength = focalLength * factor;
+
+fprintf('k1 = %.2f, k2 = %.2f, focal length = %1f\n', k1, k2, focalLength);
+
 for i=1:numImages
     [cylindricalImageTemp, MaskTemp] = CylindricalProjections( img(:,:,:,i), focalLength, k1, k2 );
     cylindricalImage{i} = cylindricalImageTemp;
