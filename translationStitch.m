@@ -12,7 +12,9 @@ end
 
 % First row is xy1 of cylinder image 1 and 2
 % Second row is xy1 of cylinder image 2 and 3
-xy1xy2 =  [369.2500  300.7500 62.3172  311.4988;
+% Factor in front of expression is to account for large or small
+% resolutions that we're working on.
+xy1xy2 =  size(img, 1) / 640 *[369.2500  300.7500 62.3172  311.4988;
       391.6983  358.7676  105.0842  370.7724;
         342.1786  358.0173   24.0520  367.0209;
           358.6852  265.7306   35.3065  275.4845;
@@ -33,7 +35,7 @@ if exist('is360', 'var') && is360
 end
 
 % Get offset of images with respect to panorama frame
-global_offsets = cumsum(-translations(:, 1:end - 1), 2);
+global_offsets = cumsum(-translations(:, 1:numImages), 2);
 
 % Make sure all translations are positive
 for dim = 1: 2
@@ -92,6 +94,7 @@ stackImTranslateds = zeros([size(imtranslateds{1}), numImages], 'uint8');
 for i = 1 : numImages
     stackImTranslateds(:, :, :, i) = imtranslateds{i};
 end
+%figure('name', 'translated images');montage(concat(4, imtranslateds{:}));
 figure('name', 'translated images');montage(stackImTranslateds);
 
 %% Crop panorama by hill-climbing
