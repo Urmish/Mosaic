@@ -8,7 +8,21 @@ for i = 1: length(HomographyMatrix)
     translations(1:2, i + 1) = HomographyMatrix{i}(1:2, end);
 end
 
-% Force tail images to be at the same height if inputs are 360 deg
+%% Manually change Homography for tenner image at 640x426 resolution
+
+% First row is xy1 of cylinder image 1 and 2
+% Second row is xy1 of cylinder image 2 and 3
+xy1xy2 =  [369.2500  300.7500 62.3172  311.4988;
+      391.6983  358.7676  105.0842  370.7724;
+        342.1786  358.0173   24.0520  367.0209;
+          358.6852  265.7306   35.3065  275.4845;
+  349.6816  302.4952   46.5609  307.7473;
+      ];
+for i = 1 : size(xy1xy2, 1)
+    translations(:, i + 1) = xy1xy2(i, 3:4) - xy1xy2(i, 1:2);
+end
+
+%% Force tail images to be at the same height if inputs are 360 deg
 % NOTE: this part isn't well tested.
 if exist('is360', 'var') && is360
     disp(translations);
@@ -63,7 +77,7 @@ end
 
 %% Equalize image exposures to reduce sharp changes in brightness when stitching
 
-equalizeExposures;
+% equalizeExposures;
  
 %% Perform stitching by alpha blending input images 1 by 1 to panorama
 imPanorama = imtranslateds{1};
@@ -86,3 +100,19 @@ imPanoramaCropped = removeBlackPixels(imPanorama);
 
 figure('name', 'Stitched image'); imshow(imPanorama);
 figure('name', 'Stitched > cropped'); imshow(imPanoramaCropped);
+
+%% Show difference between images
+
+% Show difference between all input images together in one figure
+imDifference = imtranslateds{1};
+for i = 2 : numImages
+    imDifference = imfuse(imDifference, imtranslateds{i}, 'diff');
+end
+figure('name', 'Difference image'); imshow(imDifference);
+
+% Show difference between consecutive image pairs
+for i = 1 : numImages - 1
+    imDiffPair = imfuse(imtranslateds{i}, imtranslateds{i + 1}, 'diff');
+    figure('name', sprintf('Image %i - %i', i, i + 1));
+    imshow(imDiffPair);
+end
