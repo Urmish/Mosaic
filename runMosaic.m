@@ -8,9 +8,10 @@ size(img)
 cylindricalImage = {};
 Mask = {};
 
+img = uint8(img);  % img is supposed to be uint8 upon loading but it's not. Oh well.
+
 % Subsample the number of images
-img = img(:, :, :, 1:4);
-img = uint8(img);
+% img = img(:, :, :, 1:4);
 numImages = size(img, 4);
 
 % numImages = 4;
