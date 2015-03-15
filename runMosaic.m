@@ -1,13 +1,16 @@
 rng(0);  % Seed RNG for repeatability
 
-img = ReadImagesFromFolder('tenner_large/','.jpg');
+img = ReadImagesFromFolder('tenner_full/','.jpg');
+% img = ReadImagesFromFolder('tenner_large/','.jpg');
+% img = ReadImagesFromFolder('tenner/','.jpg');
 % img = ReadImagesFromFolder('Images/','.JPG');
 size(img)
 cylindricalImage = {};
 Mask = {};
 
 % Subsample the number of images
-% img = img(:, :, :, 6:10);
+img = img(:, :, :, 1:4);
+img = uint8(img);
 numImages = size(img, 4);
 
 % numImages = 4;
@@ -24,7 +27,6 @@ focalLength = 2.8704516949460021*10^3;
 factor = size(img, 1) / 4000;  % how much large this image set is c.f. 640
 
 % Correct parameters for difference in resolution
-k1 = k1 / factor^2; k2 = k2 / factor^4;
 focalLength = focalLength * factor;
 
 fprintf('k1 = %.2f, k2 = %.2f, focal length = %1f\n', k1, k2, focalLength);
@@ -34,6 +36,8 @@ for i=1:numImages
     cylindricalImage{i} = cylindricalImageTemp;
     Mask{i} = MaskTemp;
 end
+
+figure('name', 'cylindrical images'); montage(cat(4, cylindricalImage{:}));
 
 %% Compute SIFT descriptors
 
