@@ -1,37 +1,54 @@
 rng(0);  % Seed RNG for repeatability
 
-img = ReadImagesFromFolder('tenner_full/','.jpg');
+%% Read images
+
+if ~exist('imageFolder', 'var')
+    error('Image folder "imageFolder" not specified.');
+end
+
+% img = ReadImagesFromFolder('tenner_full/','.jpg');
 % img = ReadImagesFromFolder('tenner_large/','.jpg');
-% img = ReadImagesFromFolder('tenner/','.jpg');
+img = ReadImagesFromFolder(imageFolder);
 % img = ReadImagesFromFolder('Images/','.JPG');
-size(img)
-cylindricalImage = {};
-Mask = {};
 
 img = uint8(img);  % img is supposed to be uint8 upon loading but it's not. Oh well.
 
 % Subsample the number of images
-% img = img(:, :, :, 1:4);
+img = img(:, :, :, 1:2);
 numImages = size(img, 4);
 
 % numImages = 4;
 sprintf('Input %i images\n', numImages');
 
-%%  Cylindrical projection
+%% Read camera parameters
+
+% Expect a text file of the format
+% <k1>, <k2>, <focal length>
+if ~exist('paramFile', 'var');
+    error('Camera parameter filename "paramFile" not specified.');
+end
+IS_S110 = strcmp(paramFile, 'data/s110Params.txt');
 
 % k1 and k2 of s110 at 4000x2664 is 3.5194684435329394e-02 -3.2228975511502600e-01
 % focal length of s110 at 4000x2664 is 2.8704516949460021e+03
-% k1 = -0.15; k2 = 0.0;  % camera parameters for radial distortion (Jia's
-% test images)
-k1 = 3.5194684435329394/100; k2 = -3.2228975511502600/10;
-focalLength = 2.8704516949460021*10^3;
-factor = size(img, 1) / 4000;  % how much large this image set is c.f. 640
+% k1 = -0.15; k2 = 0.0;  % camera parameters for radial distortion (Jia's test images)
+% focalLength = 595;  % Jia's test image
+params = dlmread(paramFile);
+k1 = params(1); k2 = params(2), focalLength = params(3);
 
-% Correct parameters for difference in resolution
-focalLength = focalLength * factor;
+if IS_S110
+    factor = size(img, 1) / 4000;  % how much large this image set is c.f. 640
+
+    % Correct parameters for difference in resolution
+    focalLength = focalLength * factor;
+end
 
 fprintf('k1 = %.2f, k2 = %.2f, focal length = %1f\n', k1, k2, focalLength);
 
+%%  Cylindrical projection
+
+cylindricalImage = {};
+Mask = {};
 for i=1:numImages
     [cylindricalImageTemp, MaskTemp] = CylindricalProjections( img(:,:,:,i), focalLength, k1, k2 );
     cylindricalImage{i} = cylindricalImageTemp;
