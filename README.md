@@ -1,12 +1,15 @@
 # Mosaic
-To stitch a series of images into a panorama,
 
-1. Download sample images (http://pages.cs.wisc.edu/~jiaxu/misc/testing-images.zip)
-2. Install VLFEAT (http://www.vlfeat.org/)
+This project explores panorama stitching techniques. To stitch a series of images into a panorama,
+
+1. Install VLFEAT (http://www.vlfeat.org/)
+2. Unzip [test images](http://pages.cs.wisc.edu/~jiaxu/misc/testing-images.zip) into an `Images` folder.
 3. On MATLAB command, run
 
 <b></b>
 
+    >> close all; clear all;
+    >> imageFolder='Images'; paramFile='data/testParams.txt';
     >> runMosaic; translationStitch;
-
-Note - You would have to change the focal length, k1 and k2 parameters according to the camera being used in the function CylindricalProjections( img, f, k1, k2 ) 
+    
+See project wiki for more details.
