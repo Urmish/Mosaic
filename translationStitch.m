@@ -1,14 +1,14 @@
 
 
 %% Force homographies to be translation only
-% for i = 1: length(HomographyMatrix)
-%     HomographyMatrix{i}(:, 1:2) = [1 0; 0 1; 0 0];
-%     
-%     % Translation from i to i + 1
-%     translations(1:2, i + 1) = HomographyMatrix{i}(1:2, end);
-% end
+for i = 1: length(HomographyMatrix)
+    HomographyMatrix{i}(:, 1:2) = [1 0; 0 1; 0 0];
+    
+    % Translation from i to i + 1
+    translations(1:2, i + 1) = HomographyMatrix{i}(1:2, end);
+end
 
-%% Manually change Homography for tenner image at 640x426 resolution
+%% Manually change Homography for Canon S110 images
 
 % First row is xy1 of cylinder image 1 and 2
 % Second row is xy1 of cylinder image 2 and 3
@@ -31,8 +31,10 @@ xy1xy2 =  size(img, 1) / 4000 * [2296.125       1874.875      381.46039      194
 2132.1638      1894.1269      245.24848      1924.8308;
     ];
 
-for i = 1 : size(xy1xy2, 1)
-    translations(:, i + 1) = xy1xy2(i, 3:4) - xy1xy2(i, 1:2);
+if IS_S110
+    for i = 1 : size(xy1xy2, 1)
+        translations(:, i + 1) = xy1xy2(i, 3:4) - xy1xy2(i, 1:2);
+    end
 end
 
 %% Force tail images to be at the same height if inputs are 360 deg
