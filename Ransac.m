@@ -1,5 +1,5 @@
 function [ finalHomography, finalMatches ] = Ransac( feature1, desc1, feature2, desc2 )
-
+% Uses the VL_Feat library to match points in two images, then uses the RANSAC algorithm as discussed in class to calculate homography
 [matches, scores] = vl_ubcmatch(desc1, desc2) ;
 
 MaxInlierCount = -1;
