@@ -1,4 +1,5 @@
 function [ cylindricalImage, mask ] = CylindricalProjections( img, f, k1, k2 )
+% Calculates the inverse cylindrical projections of the image
 width = size(img,2);
 height = size(img,1);
 
