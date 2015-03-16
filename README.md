@@ -8,3 +8,5 @@ To stitch a series of images into a panorama,
 <b></b>
 
     >> runMosaic; translationStitch;
+
+Note - You would have to change the focal length, k1 and k2 parameters according to the camera being used in the function CylindricalProjections( img, f, k1, k2 ) 
