@@ -1,6 +1,6 @@
 function [ outputImage, outputImageMask ] = PasteImage( inputImage, inputImageMask ,global_rows, global_cols, homography, globalMinRow, globalMinCol)
-%PASTEIMAGE Summary of this function goes here
-%   Detailed explanation goes here
+%PASTEIMAGE - Take the image and place it on the final canvas using homography
+
 min_rows = 1;
 min_cols = 1;
 max_rows = 0;
