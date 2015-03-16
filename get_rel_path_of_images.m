@@ -14,13 +14,13 @@ switch nargin
     case 1
         
         % Try several common extensions
-        extensions = {'jpg', 'jpeg'};
+        % dir is case-insensitive so 'jpg' will retrieve both .jpg and .JPG
+        extensions = {'jpg', 'jpeg', 'png'};
         filenames = [];
         for ei = 1 : numel(extensions)
             extension = extensions{ei};
             filenames = [filenames; ...
                 dir(fullfile(folder, ['*.' extension])); ...
-                dir(fullfile(folder, ['*.' upper(extension)])) ...
                 ];
         end
     otherwise
